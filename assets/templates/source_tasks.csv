@@ -1,0 +1,14 @@
+Epic,Features (Story),Sub-Task,Description,DevOps (MD),BE (MD),FE (MD),UX UI (MD),QA (MD),Notes,URL,,
+Design System UI,[FE] create layout web site,create and test router,,,,0.5,,,,,,MD ปรับขึ้นครั้งละ 0.5
+Design System UI,[FE] create layout web site,create and test navbar,,,,0.5,,,,,,0.5 - 3
+Design System UI,[FE] create layout web site,create and test footer,,,,0.5,,,,,,
+Design System UI,[FE] create layout web site,create and test responsive desktop and mobile ,,,,1,,,,,,
+Design System UI,[FE] create design system material follow figma,install font and create and test typography [for custom theme with design system],,,,0.5,,,,,,
+Design System UI,[FE] create design system material follow figma,create and test theme color [for custom theme with design system],,,,0.5,,,,,,
+Design System UI,[FE] create design system material follow figma,create and test navbar ,,,,0.5,,,,,,
+Design System UI,[FE] create design system material follow figma,create and test button ,,,,0.5,,,,,,
+Design System UI,[FE] create design system material follow figma,create and test text field,,,,0.5,,,,,,
+Design System UI,[FE] create design system material follow figma,create and test checkbox,,,,0.5,,,,,,
+Home page,[FE] section home,create and test section home ,,,,2,,,wait strongly requirement,,,
+Home page,[FE] section about,create and test section about ,,,,2,,,wait strongly requirement,,,
+Home page,[FE] section contact us,create and test section contact us ,,,,2,,,wait strongly requirement,,,
