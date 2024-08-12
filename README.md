@@ -2,5 +2,5 @@
 
 ## TODO
 
-- [] do cli
-- [] add script convert csv to jira import csv
+- [ ] do cli
+- [ ] add script convert csv to jira import csv
