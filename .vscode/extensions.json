@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "janisdd.vscode-edit-csv",
-        "mechatroner.rainbow-csv"
+        "mechatroner.rainbow-csv",
+        "oven.bun-vscode"
     ]
 }
