@@ -1,5 +1,6 @@
 import * as fs from 'fs';
-import { parse, stringify } from 'fast-csv';
+import { parse } from 'fast-csv';
+import fastCsv from 'fast-csv';
 
 interface CsvARow {
     Epic: string;
@@ -50,7 +51,6 @@ async function convertCsv(inputFilePath: string, outputFilePath: string) {
                 });
             });
 
-
             // console.log(csvBData)
 
             // // Write CSV_B
@@ -58,9 +58,45 @@ async function convertCsv(inputFilePath: string, outputFilePath: string) {
             //     .pipe(fs.createWriteStream(outputFilePath))
             //     .on('finish', () => console.log('CSV_B written successfully'))
             //     .on('error', (error) => console.error('Error writing CSV_B:', error));
+
+            fastCsv
+                .write(csvBData, { headers: true })
+                .pipe(fs.createWriteStream(outputFilePath))
+                .on('finish', () => {
+                    console.log('CSV_B file created successfully');
+
+
+                    // Replace with your Jira API endpoint and authentication
+                    // const jiraApi = axios.create({
+                    //     baseURL: jiraUrl,
+                    //     headers: {
+                    //         Authorization: `Basic ${Buffer.from(`${jiraToken}:`).toString('base64')}`,
+                    //         'Content-Type': 'application/json',
+                    //     },
+                    // });
+
+                    // // Example of creating an issue in Jira
+                    // const createIssue = async (issueData: CSV_B_Row) => {
+                    //     try {
+                    //         const response = await jiraApi.post('/rest/api/3/issue', issueData);
+                    //         console.log('Issue created:', response.data);
+                    //     } catch (error) {
+                    //         console.error('Error creating issue:', error);
+                    //     }
+                    // };
+
+                    // outputData.forEach(async (issue) => {
+                    //     await createIssue(issue);
+                    // });
+
+                    // resolve();
+                });
         });
 }
 
 
 // Example usage
 convertCsv('assets/templates/source_tasks.csv', 'assets/templates/des_import.csv');
+
+export { convertCsv };
+export type { CsvARow, CsvBRow };
