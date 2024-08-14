@@ -1,6 +1,5 @@
 import * as fs from 'fs';
-import { parse } from 'fast-csv';
-import fastCsv from 'fast-csv';
+import * as csv from 'fast-csv';
 
 interface CsvARow {
     Epic: string;
@@ -25,73 +24,79 @@ interface CsvBRow {
 async function convertCsv(inputFilePath: string, outputFilePath: string) {
     const csvAData: CsvARow[] = [];
 
+    // FIXME: https://c2fo.github.io/fast-csv/docs/introduction/example
     // Read CSV_A
     fs.createReadStream(inputFilePath)
-        .pipe(parse())
+        .pipe(csv.parse({ headers: true }))
         .on('data', (data: CsvARow) => csvAData.push(data))
         .on('end', () => {
-            // Data transformation logic
-            const csvBData: CsvBRow[] = [];
+            console.log(csvAData)
 
-            // Basic transformation example - replace with your actual logic
-            csvAData.forEach((row) => {
-                const issueType = row['Sub-Task'] ? 'Sub-Task' : row['Features (Story)'] ? 'Story' : 'Epic';
-                const storyPoint = row['DevOps (MD)'] + row['BE (MD)'] + row['FE (MD)'] + row['UX UI (MD)'] + row['QA (MD)'];
-                const issueKey = row['Sub-Task'] || row['Features (Story)'] || row.Epic; // Replace with a more robust logic
-                const parent = issueType === 'Sub-Task' ? row['Features (Story)'] : issueType === 'Story' ? row.Epic : '';
+        })
+    // .on('end', () => {
+    //     // Data transformation logic
+    //     const csvBData: CsvBRow[] = [];
 
-                console.log(row)
+    //     // Basic transformation example - replace with your actual logic
+    //     csvAData.forEach((row, index) => {
+    //         const issueType = row['Sub-Task'] ? 'Sub-Task' : row['Features (Story)'] ? 'Story' : 'Epic';
+    //         const storyPoint = row['DevOps (MD)'] + row['BE (MD)'] + row['FE (MD)'] + row['UX UI (MD)'] + row['QA (MD)'];
+    //         const issueKey = row['Sub-Task'] || row['Features (Story)'] || row.Epic; // Replace with a more robust logic
+    //         const parent = issueType === 'Sub-Task' ? row['Features (Story)'] : issueType === 'Story' ? row.Epic : '';
 
-                csvBData.push({
-                    IssueType: issueType,
-                    Summary: row[issueType],
-                    'Story point': storyPoint,
-                    IssueKey: issueKey,
-                    Parent: parent,
-                });
-            });
+    //         // Note: skip header
+    //         if (index == 0) { return }
 
-            // console.log(csvBData)
+    //         csvBData.push({
+    //             IssueType: issueType,
+    //             Summary: row[issueType],
+    //             'Story point': storyPoint,
+    //             IssueKey: issueKey,
+    //             Parent: parent,
+    //         });
+    //     });
 
-            // // Write CSV_B
-            // stringify(csvBData, { headers: true })
-            //     .pipe(fs.createWriteStream(outputFilePath))
-            //     .on('finish', () => console.log('CSV_B written successfully'))
-            //     .on('error', (error) => console.error('Error writing CSV_B:', error));
+    //     // console.log(csvBData)
 
-            fastCsv
-                .write(csvBData, { headers: true })
-                .pipe(fs.createWriteStream(outputFilePath))
-                .on('finish', () => {
-                    console.log('CSV_B file created successfully');
+    //     // // Write CSV_B
+    //     // stringify(csvBData, { headers: true })
+    //     //     .pipe(fs.createWriteStream(outputFilePath))
+    //     //     .on('finish', () => console.log('CSV_B written successfully'))
+    //     //     .on('error', (error) => console.error('Error writing CSV_B:', error));
+
+    //     fastCsv
+    //         .write(csvBData, { headers: true })
+    //         .pipe(fs.createWriteStream(outputFilePath))
+    //         .on('finish', () => {
+    //             console.log('CSV_B file created successfully');
 
 
-                    // Replace with your Jira API endpoint and authentication
-                    // const jiraApi = axios.create({
-                    //     baseURL: jiraUrl,
-                    //     headers: {
-                    //         Authorization: `Basic ${Buffer.from(`${jiraToken}:`).toString('base64')}`,
-                    //         'Content-Type': 'application/json',
-                    //     },
-                    // });
+    //             // Replace with your Jira API endpoint and authentication
+    //             // const jiraApi = axios.create({
+    //             //     baseURL: jiraUrl,
+    //             //     headers: {
+    //             //         Authorization: `Basic ${Buffer.from(`${jiraToken}:`).toString('base64')}`,
+    //             //         'Content-Type': 'application/json',
+    //             //     },
+    //             // });
 
-                    // // Example of creating an issue in Jira
-                    // const createIssue = async (issueData: CSV_B_Row) => {
-                    //     try {
-                    //         const response = await jiraApi.post('/rest/api/3/issue', issueData);
-                    //         console.log('Issue created:', response.data);
-                    //     } catch (error) {
-                    //         console.error('Error creating issue:', error);
-                    //     }
-                    // };
+    //             // // Example of creating an issue in Jira
+    //             // const createIssue = async (issueData: CSV_B_Row) => {
+    //             //     try {
+    //             //         const response = await jiraApi.post('/rest/api/3/issue', issueData);
+    //             //         console.log('Issue created:', response.data);
+    //             //     } catch (error) {
+    //             //         console.error('Error creating issue:', error);
+    //             //     }
+    //             // };
 
-                    // outputData.forEach(async (issue) => {
-                    //     await createIssue(issue);
-                    // });
+    //             // outputData.forEach(async (issue) => {
+    //             //     await createIssue(issue);
+    //             // });
 
-                    // resolve();
-                });
-        });
+    //             // resolve();
+    //         });
+    // });
 }
 
 export { convertCsv };
