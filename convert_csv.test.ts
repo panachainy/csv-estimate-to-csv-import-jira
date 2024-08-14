@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { convertCsv, type CsvARow } from "./index";
+import { convertCsv, type CsvARow } from "./convert_csv";
 import * as fs from 'fs';
 import { parse } from "fast-csv";
 
@@ -17,4 +17,5 @@ test("when convert csv_a to csv_b should be correct", () => {
 
     console.log(csvAData)
 
+    expect(csvAData).toEqual([])
 });
