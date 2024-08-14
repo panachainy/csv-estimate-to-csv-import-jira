@@ -5,7 +5,7 @@ import { parse } from "fast-csv";
 
 test("when convert csv_a to csv_b should be correct", () => {
     const inputPath = 'assets/templates/source_tasks.csv'
-    const outputPath = 'assets/templates/des_import_test.csv'
+    const outputPath = 'des_import_test.csv'
     convertCsv(inputPath, outputPath);
 
     const csvAData: CsvARow[] = [];
