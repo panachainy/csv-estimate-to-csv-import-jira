@@ -28,11 +28,35 @@ async function convertCsv(inputFilePath: string, outputFilePath: string) {
     // Read CSV_A
     fs.createReadStream(inputFilePath)
         .pipe(csv.parse({ headers: true }))
-        .on('data', (data: CsvARow) => csvAData.push(data))
-        .on('end', () => {
-            console.log(csvAData)
+        .pipe(
+            csv.format<CsvARow, CsvBRow>({ headers: true }),
+        ).transform((row, next): void => {
+            // console.log(row)
 
+            // check if epic *check only firstime
+            // check if story *check only firstime
+            console.log('transform')
+            // check if sub-task
+            return next(null, {
+                IssueType: "e",
+                Summary: "",
+                'Story point': 1,
+                IssueKey: "",
+                Parent: "",
+            } as CsvBRow)
         })
+        // .pipe(process.stdout)
+        .on('end', (row: any) => {
+            console.log(row)
+        });
+
+
+    console.log("done ==========")
+    // .on('data', (data: CsvARow) => csvAData.push(data))
+    // .on('end', () => {
+    //     console.log(csvAData)
+
+    // })
     // .on('end', () => {
     //     // Data transformation logic
     //     const csvBData: CsvBRow[] = [];
@@ -55,14 +79,6 @@ async function convertCsv(inputFilePath: string, outputFilePath: string) {
     //             Parent: parent,
     //         });
     //     });
-
-    //     // console.log(csvBData)
-
-    //     // // Write CSV_B
-    //     // stringify(csvBData, { headers: true })
-    //     //     .pipe(fs.createWriteStream(outputFilePath))
-    //     //     .on('finish', () => console.log('CSV_B written successfully'))
-    //     //     .on('error', (error) => console.error('Error writing CSV_B:', error));
 
     //     fastCsv
     //         .write(csvBData, { headers: true })
