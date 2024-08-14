@@ -1,94 +1,66 @@
-const csv = require('csv-parser');
-import fs from 'fs';
-import fastCsv from 'fast-csv';
-import axios from 'axios';
+import * as fs from 'fs';
+import { parse, stringify } from 'fast-csv';
 
-
-interface CSV_A_Row {
+interface CsvARow {
     Epic: string;
     'Features (Story)': string;
-    SubTask: string;
+    'Sub-Task': string;
     'DevOps (MD)': number;
     'BE (MD)': number;
     'FE (MD)': number;
     'UX UI (MD)': number;
     'QA (MD)': number;
-    Notes: string;
-    URL: string;
-    'Column 11': string;
-    'Column 12': string;
+    // ... other columns
 }
 
-interface CSV_B_Row {
+interface CsvBRow {
     IssueType: string;
     Summary: string;
     'Story point': number;
-    'Issue Key': string;
+    IssueKey: string;
     Parent: string;
 }
 
-async function processCSV(inputFilePath: string, outputFilePath: string, jiraUrl: string, jiraToken: string) {
-    const epicMap: Record<string, string> = {};
-    const storyMap: Record<string, string> = {};
-    let issueKeyCounter = 1;
+async function convertCsv(inputFilePath: string, outputFilePath: string) {
+    const csvAData: CsvARow[] = [];
 
-    const outputData: CSV_B_Row[] = [];
+    // Read CSV_A
+    fs.createReadStream(inputFilePath)
+        .pipe(parse())
+        .on('data', (data: CsvARow) => csvAData.push(data))
+        .on('end', () => {
+            // Data transformation logic
+            const csvBData: CsvBRow[] = [];
 
-    return new Promise((resolve, reject) => {
-        fs.createReadStream(inputFilePath)
-            .pipe(csv())
-            .on('data', async (data: CSV_A_Row) => {
-                try {
-                    const epicKey = epicMap[data.Epic] || `epic_${issueKeyCounter}`;
-                    epicMap[data.Epic] = epicKey;
+            // Basic transformation example - replace with your actual logic
+            csvAData.forEach((row) => {
+                const issueType = row['Sub-Task'] ? 'Sub-Task' : row['Features (Story)'] ? 'Story' : 'Epic';
+                const storyPoint = row['DevOps (MD)'] + row['BE (MD)'] + row['FE (MD)'] + row['UX UI (MD)'] + row['QA (MD)'];
+                const issueKey = row['Sub-Task'] || row['Features (Story)'] || row.Epic; // Replace with a more robust logic
+                const parent = issueType === 'Sub-Task' ? row['Features (Story)'] : issueType === 'Story' ? row.Epic : '';
 
-                    const storyKey = storyMap[data.Epic + data['Features (Story)']] || `story_${issueKeyCounter}`;
-                    storyMap[data.Epic + data['Features (Story)']] = storyKey;
+                console.log(row)
 
-                    const storyPoint = data['DevOps (MD)'] + data['BE (MD)'] + data['FE (MD)'] + data['UX UI (MD)'] + data['QA (MD)'];
-
-                    outputData.push({
-                        IssueType: data.SubTask ? 'Subtask' : data['Features (Story)'] ? 'Story' : 'Epic',
-                        Summary: data.SubTask ? data.SubTask : data['Features (Story)'] ? data['Features (Story)'] : data.Epic,
-                        'Story point': storyPoint,
-                        'Issue Key': `${data.IssueType}_${issueKeyCounter}`,
-                        Parent: data.SubTask ? storyKey : epicKey,
-                    });
-
-                    issueKeyCounter++;
-                } catch (error) {
-                    console.error('Error processing CSV data:', error);
-                }
-            })
-            .on('end', () => {
-                fastCsv
-                    .write(outputData, { headers: true })
-                    .pipe(fs.createWriteStream(outputFilePath))
-                    .on('finish', () => {
-                        console.log('CSV_B file created successfully');
-                        // ... Jira import logic ...
-                    })
-                    .on('error', (error) => {
-                        console.error('Error writing CSV_B file:', error);
-                    });
-            })
-            .on('error', (error) => {
-                console.error('Error reading CSV_A file:', error);
+                csvBData.push({
+                    IssueType: issueType,
+                    Summary: row[issueType],
+                    'Story point': storyPoint,
+                    IssueKey: issueKey,
+                    Parent: parent,
+                });
             });
-    });
+
+
+            // console.log(csvBData)
+
+            // // Write CSV_B
+            // stringify(csvBData, { headers: true })
+            //     .pipe(fs.createWriteStream(outputFilePath))
+            //     .on('finish', () => console.log('CSV_B written successfully'))
+            //     .on('error', (error) => console.error('Error writing CSV_B:', error));
+        });
 }
 
-// ... rest of your code
 
-
-// ... rest of your code
-
-
-const inputFilePath = 'assets/templates/source_tasks.csv';
-const outputFilePath = 'assets/templates/des_import.csv';
-const jiraUrl = 'https://your-jira-instance.atlassian.net';
-const jiraToken = 'your-jira-api-token';
-
-processCSV(inputFilePath, outputFilePath, jiraUrl, jiraToken)
-    .then(() => console.log('Process completed'))
-    .catch((error) => console.error('Error:', error));
+// Example usage
+convertCsv('assets/templates/source_tasks.csv', 'assets/templates/des_import.csv');
