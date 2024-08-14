@@ -1,6 +1,6 @@
-Epic,Features (Story),Sub-Task,DevOps (MD),BE (MD),FE (MD),UX UI (MD),QA (MD),Notes,URL,Column 11,Column 12
-Pre-Payment infra,[FE] setup Frontend payment,Setup FE Repository,,,0.5,,,,,,
-Pre-Payment infra,[FE] setup Frontend payment,Setup Deploy + CI CD,,,1,,,,,,
-Pre-Payment infra,[BE] setup Backend payment service,Setup BE Repository,,0.5,,,,,,,
-Payment Topup,[BE] integrate 3rd party service,add crystal after OPN Success,,1,,,,,,,
-Payment Topup,[BE] integrate 3rd party service,write test,,1,,,,,,,
+Epic,Features (Story),Sub-Task,DevOps (MD),BE (MD),FE (MD),UX UI (MD),QA (MD),Notes,URL
+Pre-Payment infra,[FE] setup Frontend payment,Setup FE Repository,,,0.5,,,,
+Pre-Payment infra,[FE] setup Frontend payment,Setup Deploy + CI CD,,,1,,,,
+Pre-Payment infra,[BE] setup Backend payment service,Setup BE Repository,,0.5,,,,,
+Payment Topup,[BE] integrate 3rd party service,add crystal after OPN Success,,1,,,,,
+Payment Topup,[BE] integrate 3rd party service,write test,,1,,,,,
