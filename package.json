@@ -10,7 +10,10 @@
   },
   "scripts": {
     "clean": "rm -rf dist && echo 'Done.'",
-    "dev": "bun --watch index.ts"
+    "dev": "bun --watch index.ts",
+    "test": "bun test",
+    "tw": "bun test:watch",
+    "test:watch": "bun test --watch"
   },
   "dependencies": {
     "axios": "^1.7.4",
