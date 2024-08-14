@@ -1,12 +1,11 @@
 Issue Type,Summary,Story point,Issue Key,Parent
-Epic,1 epic,,1 epic,
-Story,1 import story,,1 import story,1 epic
-Subtask,1 import sub task 1,3,1 import sub task 1,1 import story
-Subtask,1 import sub task 2,4,1 import sub task 2,1 import story
-Story,2 import story,,2 import story,1 epic
-Subtask,2 import sub task 1,1,2 import sub task 1,2 import story
-Subtask,2 import sub task 2,0.5,2 import sub task 2,2 import story
-Subtask,2 import sub task 3,1,2 import sub task 3,2 import story
-Epic,2 epic,,2 epic,
-Story,3 import story,,3 import story,2 epic
-Subtask,3 import sub task 1,2,3 import sub task 1,3 import story
+Epic,Pre-Payment infra,,Pre-Payment infra,
+Story,[FE] setup Frontend payment,,[FE] setup Frontend payment,Pre-Payment infra
+Subtask,Setup FE Repository,0.5,Setup FE Repository,[FE] setup Frontend payment
+Subtask,Setup Deploy + CI CD,1,Setup Deploy + CI CD,[FE] setup Frontend payment
+Story,[BE] setup Backend payment service,,[BE] setup Backend payment service,Pre-Payment infra
+Subtask,Setup BE Repository,0.5,Setup BE Repository,[BE] setup Backend payment service
+Epic,Payment Topup,,Payment Topup,
+Story,[BE] integrate 3rd party service,,[BE] integrate 3rd party service,Payment Topup
+Subtask,add crystal after OPN Success,1,add crystal after OPN Success,[BE] integrate 3rd party service
+Subtask,write test,1,write test,[BE] integrate 3rd party service
