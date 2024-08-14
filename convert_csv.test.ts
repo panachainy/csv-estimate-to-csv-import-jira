@@ -42,7 +42,7 @@ test("2222222", async () => {
     const inputPath = 'assets/templates/source_tasks.csv'
     const outputPath = 'des_import_test.csv'
 
-    // convertCsv(inputPath, outputPath);
+    convertCsv(inputPath, outputPath);
 
     var actualData = await readCsv(outputPath)
         .then(data => data)
