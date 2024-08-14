@@ -174,4 +174,4 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 
-assets/templates/des_import_test.csv
+des_import_test.csv
