@@ -68,22 +68,16 @@ async function convertCsv(inputFilePath: string, outputFilePath: string): Promis
                     Parent: row['Features (Story)'],
                 } as CsvBRow)
             })
-
             .on('end', (row: any) => {
                 csv.write(csvData, { headers: true })
                     .pipe(fs.createWriteStream(outputFilePath))
                     .on('finish', () => {
                         console.log('CSV_B file created successfully');
-
-
+                        resolve();
                     });
-
-                resolve();
             })
             .on('error', (error) => reject(error));
     });
-
-
 }
 
 export { convertCsv };

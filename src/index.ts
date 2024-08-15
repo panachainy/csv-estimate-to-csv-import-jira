@@ -1,4 +1,4 @@
-import { convertCsv } from "./convert_csv";
+import { convertCsv } from "@/src/convert_csv";
 
 const inputPath = 'assets/templates/source_tasks.csv'
 const outputPath = 'assets/templates/des_import.csv'
