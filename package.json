@@ -10,7 +10,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist && echo 'Done.'",
-    "dev": "bun --watch index.ts",
+    "dev": "bun --watch ./src/index.ts",
     "test": "bun test",
     "tw": "bun test:watch",
     "test:watch": "bun test --watch"
