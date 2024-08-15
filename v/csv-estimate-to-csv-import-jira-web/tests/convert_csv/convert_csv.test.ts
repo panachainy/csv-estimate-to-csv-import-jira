@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { convertCsv } from "@/src/convert_csv";
+import { convertCsv } from "@/src/convert_csv/convert_csv";
 import * as fs from 'fs';
 
 test("when convertCsv should be correct expect data", async () => {
