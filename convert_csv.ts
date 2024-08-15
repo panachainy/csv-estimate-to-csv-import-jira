@@ -21,57 +21,124 @@ interface CsvBRow {
     Parent: string;
 }
 
-async function convertCsv(inputFilePath: string, outputFilePath: string): Promise<csv.CsvFormatterStream<CsvARow, CsvBRow>> {
-    const csvAData: CsvARow[] = [];
+async function convertCsv(inputFilePath: string, outputFilePath: string): Promise<void> {
+    const csvData: CsvBRow[] = [];
     const exitingEpic: string[] = [];
     const exitingStory: string[] = [];
 
     // FIXME: https://c2fo.github.io/fast-csv/docs/introduction/example
     // Read CSV_A
-    return await fs.createReadStream(inputFilePath)
-        .pipe(csv.parse({ headers: true }))
-        .pipe(
-            csv.format<CsvARow, CsvBRow>({ headers: true }),
-        ).transform((row, next): void => {
-            // console.log(row)
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(inputFilePath)
+            .pipe(csv.parse({ headers: true }))
+            .pipe(
+                csv.format<CsvARow, CsvBRow>({ headers: true })
+            )
+            .on('data', (row: any) => {
+                // console.log(row)
+                // check if epic
+                if (!exitingEpic.includes(row.Epic)) {
 
-            // check if epic
-            if (!exitingEpic.includes(row.Epic)) {
-                exitingEpic.push(row.Epic)
+                    csvData.push({
+                        IssueType: "Epic",
+                        Summary: row.Epic,
+                        // 'Story point': 0,
+                        IssueKey: row.Epic,
+                        // Parent: "",
+                    } as CsvBRow)
+                    exitingEpic.push(row.Epic);
 
-                // FIXME: transform only epic
-                return next(null, {
-                    IssueType: "Epic",
-                    Summary: row.Epic,
-                    // 'Story point': 0,
-                    IssueKey: row.Epic,
-                    // Parent: "",
+                    // // FIXME: transform only epic
+                    // return next(null, {
+                    //     IssueType: "Epic",
+                    //     Summary: row.Epic,
+                    //     // 'Story point': 0,
+                    //     IssueKey: row.Epic,
+                    //     // Parent: "",
+                    // } as CsvBRow);
+                }
+
+                if (!exitingStory.includes(row["Features (Story)"])) {
+
+                    csvData.push({
+                        IssueType: "Story",
+                        Summary: row['Features (Story)'],
+                        // 'Story point': sp,
+                        IssueKey: row['Features (Story)'],
+                        Parent: row.Epic,
+                    } as CsvBRow)
+                    exitingStory.push(row["Features (Story)"]);
+                }
+
+                // console.log('transform', row);
+
+                // return next(null, {
+                //     IssueType: "e",
+                //     Summary: "",
+                //     'Story point': 1,
+                //     IssueKey: "",
+                //     Parent: "",
+                // } as CsvBRow);
+
+
+
+                const sp = row['DevOps (MD)'] + row['BE (MD)'] + row['FE (MD)'] + row['UX UI (MD)'] + row['QA (MD)']
+
+
+                // Epic: string;
+                // 'Features (Story)': string;
+                // 'Sub-Task': string;
+
+                csvData.push({
+                    IssueType: "Subtask",
+                    Summary: row['Sub-Task'],
+                    'Story point': sp,
+                    IssueKey: row['Sub-Task'],
+                    Parent: row['Features (Story)'],
                 } as CsvBRow)
-            }
+            })
+            // .transform((row, next): void => {
+            //     console.log(row)
+            //     // check if epic
+            //     if (!exitingEpic.includes(row.Epic)) {
+            //         exitingEpic.push(row.Epic);
 
-            if (!exitingStory.includes(row["Features (Story)"])) {
-                exitingStory.push(row["Features (Story)"])
+            //         // FIXME: transform only epic
+            //         return next(null, {
+            //             IssueType: "Epic",
+            //             Summary: row.Epic,
+            //             // 'Story point': 0,
+            //             IssueKey: row.Epic,
+            //             // Parent: "",
+            //         } as CsvBRow);
+            //     }
 
-                // FIXME: transform only epic
-                return
-            }
+            //     if (!exitingStory.includes(row["Features (Story)"])) {
+            //         exitingStory.push(row["Features (Story)"]);
 
+            //         // FIXME: transform only epic
+            //         return;
+            //     }
 
+            //     // console.log('transform', row);
 
-            console.log('transform', row)
+            //     return next(null, {
+            //         IssueType: "e",
+            //         Summary: "",
+            //         'Story point': 1,
+            //         IssueKey: "",
+            //         Parent: "",
+            //     } as CsvBRow);
+            // })
+            // .pipe(process.stdout)
+            .on('end', (row: any) => {
+                console.log("csvData", csvData)
 
-            return next(null, {
-                IssueType: "e",
-                Summary: "",
-                'Story point': 1,
-                IssueKey: "",
-                Parent: "",
-            } as CsvBRow)
-        })
-        // .pipe(process.stdout)
-        .on('end', (row: any) => {
-            console.log(row)
-        });
+                resolve();
+                // console.log(row);
+            })
+            .on('error', (error) => reject(error));
+    });
 
 
     // .on('data', (data: CsvARow) => csvAData.push(data))
