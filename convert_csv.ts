@@ -5,18 +5,17 @@ interface CsvARow {
     Epic: string;
     'Features (Story)': string;
     'Sub-Task': string;
-    'DevOps (MD)': number;
-    'BE (MD)': number;
-    'FE (MD)': number;
-    'UX UI (MD)': number;
-    'QA (MD)': number;
-    // ... other columns
+    'DevOps (MD)': string;
+    'BE (MD)': string;
+    'FE (MD)': string;
+    'UX UI (MD)': string;
+    'QA (MD)': string;
 }
 
 interface CsvBRow {
     IssueType: string;
     Summary: string;
-    'Story point': number;
+    'Story point': string;
     IssueKey: string;
     Parent: string;
 }
@@ -31,9 +30,9 @@ async function convertCsv(inputFilePath: string, outputFilePath: string): Promis
     return new Promise((resolve, reject) => {
         fs.createReadStream(inputFilePath)
             .pipe(csv.parse({ headers: true }))
-            .pipe(
-                csv.format<CsvARow, CsvBRow>({ headers: true })
-            )
+            // .pipe(
+            //     csv.format<CsvARow, CsvBRow>({ headers: true })
+            // )
             .on('data', (row: any) => {
                 // console.log(row)
                 // check if epic
@@ -42,9 +41,9 @@ async function convertCsv(inputFilePath: string, outputFilePath: string): Promis
                     csvData.push({
                         IssueType: "Epic",
                         Summary: row.Epic,
-                        // 'Story point': 0,
+                        'Story point': "",
                         IssueKey: row.Epic,
-                        // Parent: "",
+                        Parent: "",
                     } as CsvBRow)
                     exitingEpic.push(row.Epic);
 
@@ -63,7 +62,7 @@ async function convertCsv(inputFilePath: string, outputFilePath: string): Promis
                     csvData.push({
                         IssueType: "Story",
                         Summary: row['Features (Story)'],
-                        // 'Story point': sp,
+                        'Story point': "",
                         IssueKey: row['Features (Story)'],
                         Parent: row.Epic,
                     } as CsvBRow)
@@ -82,7 +81,7 @@ async function convertCsv(inputFilePath: string, outputFilePath: string): Promis
 
 
 
-                const sp = row['DevOps (MD)'] + row['BE (MD)'] + row['FE (MD)'] + row['UX UI (MD)'] + row['QA (MD)']
+                const sp = row['DevOps (MD)'] as number + row['BE (MD)'] as number + row['FE (MD)'] as number + row['UX UI (MD)'] as number + row['QA (MD)'] as number
 
 
                 // Epic: string;
@@ -92,7 +91,7 @@ async function convertCsv(inputFilePath: string, outputFilePath: string): Promis
                 csvData.push({
                     IssueType: "Subtask",
                     Summary: row['Sub-Task'],
-                    'Story point': sp,
+                    'Story point': sp + "",
                     IssueKey: row['Sub-Task'],
                     Parent: row['Features (Story)'],
                 } as CsvBRow)
@@ -132,7 +131,36 @@ async function convertCsv(inputFilePath: string, outputFilePath: string): Promis
             // })
             // .pipe(process.stdout)
             .on('end', (row: any) => {
-                console.log("csvData", csvData)
+                csv.write(csvData, { headers: true })
+                    .pipe(fs.createWriteStream(outputFilePath))
+                    .on('finish', () => {
+                        console.log('CSV_B file created successfully');
+
+                        // Replace with your Jira API endpoint and authentication
+                        // const jiraApi = axios.create({
+                        //     baseURL: jiraUrl,
+                        //     headers: {
+                        //         Authorization: `Basic ${Buffer.from(`${jiraToken}:`).toString('base64')}`,
+                        //         'Content-Type': 'application/json',
+                        //     },
+                        // });
+
+                        // // Example of creating an issue in Jira
+                        // const createIssue = async (issueData: CSV_B_Row) => {
+                        //     try {
+                        //         const response = await jiraApi.post('/rest/api/3/issue', issueData);
+                        //         console.log('Issue created:', response.data);
+                        //     } catch (error) {
+                        //         console.error('Error creating issue:', error);
+                        //     }
+                        // };
+
+                        // outputData.forEach(async (issue) => {
+                        //     await createIssue(issue);
+                        // });
+
+                        // resolve();
+                    });
 
                 resolve();
                 // console.log(row);
