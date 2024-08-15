@@ -21,22 +21,45 @@ interface CsvBRow {
     Parent: string;
 }
 
-async function convertCsv(inputFilePath: string, outputFilePath: string) {
+async function convertCsv(inputFilePath: string, outputFilePath: string): Promise<csv.CsvFormatterStream<CsvARow, CsvBRow>> {
     const csvAData: CsvARow[] = [];
+    const exitingEpic: string[] = [];
+    const exitingStory: string[] = [];
 
     // FIXME: https://c2fo.github.io/fast-csv/docs/introduction/example
     // Read CSV_A
-    fs.createReadStream(inputFilePath)
+    return await fs.createReadStream(inputFilePath)
         .pipe(csv.parse({ headers: true }))
         .pipe(
             csv.format<CsvARow, CsvBRow>({ headers: true }),
         ).transform((row, next): void => {
             // console.log(row)
 
-            // check if epic *check only firstime
-            // check if story *check only firstime
-            console.log('transform')
-            // check if sub-task
+            // check if epic
+            if (!exitingEpic.includes(row.Epic)) {
+                exitingEpic.push(row.Epic)
+
+                // FIXME: transform only epic
+                return next(null, {
+                    IssueType: "Epic",
+                    Summary: row.Epic,
+                    // 'Story point': 0,
+                    IssueKey: row.Epic,
+                    // Parent: "",
+                } as CsvBRow)
+            }
+
+            if (!exitingStory.includes(row["Features (Story)"])) {
+                exitingStory.push(row["Features (Story)"])
+
+                // FIXME: transform only epic
+                return
+            }
+
+
+
+            console.log('transform', row)
+
             return next(null, {
                 IssueType: "e",
                 Summary: "",
@@ -51,7 +74,6 @@ async function convertCsv(inputFilePath: string, outputFilePath: string) {
         });
 
 
-    console.log("done ==========")
     // .on('data', (data: CsvARow) => csvAData.push(data))
     // .on('end', () => {
     //     console.log(csvAData)
