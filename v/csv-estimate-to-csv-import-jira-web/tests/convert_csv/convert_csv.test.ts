@@ -4,7 +4,7 @@ import * as fs from 'fs';
 
 test("when convertCsv should be correct expect data", async () => {
     const inputPath = 'tests/convert_csv/source_tasks.csv'
-    const outputPath = './des_import_test.csv'
+    const outputPath = 'tests/convert_csv/des_import_test.csv'
     const expectPath = 'tests/convert_csv/expect_csv.csv'
 
     await convertCsv(inputPath, outputPath);
