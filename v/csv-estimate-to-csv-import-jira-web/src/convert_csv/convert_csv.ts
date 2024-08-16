@@ -32,11 +32,12 @@ async function convertCsv(inputFilePath: string, outputFilePath: string): Promis
         fs.createReadStream(inputFilePath)
             .pipe(csv.parse({ headers: true }))
             .on('data', (row: any) => {
-                if (!exitingEpic.includes(row.Epic)) {
 
+                if (!exitingEpic.includes(row.Epic)) {
                     csvData.push({
                         IssueType: "Epic",
                         Summary: row.Epic,
+                        Description: "",
                         'Story point': "",
                         IssueKey: row.Epic,
                         Parent: "",
@@ -45,11 +46,10 @@ async function convertCsv(inputFilePath: string, outputFilePath: string): Promis
                 }
 
                 if (!exitingStory.includes(row["Features (Story)"])) {
-
                     csvData.push({
                         IssueType: "Story",
                         Summary: row['Features (Story)'],
-                        Description: 'wait to add by PO',
+                        Description: '',
                         'Story point': "",
                         IssueKey: row['Features (Story)'],
                         Parent: row.Epic,
