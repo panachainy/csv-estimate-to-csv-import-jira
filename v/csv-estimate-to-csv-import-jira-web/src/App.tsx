@@ -1,17 +1,18 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
+import { Grid, TextareaAutosize } from '@mui/material';
 import './App.css'
 
-import Button from '@mui/material/Button';
-
 function App() {
-  // const [count, setCount] = useState(0)
-
 
   return (
     <>
-      <Button variant="contained">Hello world</Button >
+      <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <TextareaAutosize minRows={20} />
+        </Grid>
+        <Grid item xs={6}>
+          <TextareaAutosize minRows={20} />
+        </Grid>
+      </Grid>
     </>
   )
 }
